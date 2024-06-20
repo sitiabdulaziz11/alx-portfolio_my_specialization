@@ -1,9 +1,13 @@
 from flask_login import login_required
-from models import Students, Subjects
+from flask import render_template, redirect, url_for
+from models import Students, Subjects, User
 from forms import StudentForm
+from app import app, db, login
 
-from app import app
 
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 @app.route('/add_student', methods=['GET', 'POST'])
 @login_required
@@ -22,7 +26,7 @@ def add_student():
             subject_id=form.subject.data,
             status=form.status.data
         )
-        session.add(student)
-        session.commit()
+        db.session.add(student)
+        db.session.commit()
         return redirect(url_for(''))
     return render_template('', form=form, students=students)
