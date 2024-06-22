@@ -112,3 +112,15 @@ class Result(Base):
     subject_id = Column(Integer, ForeignKey("subjects.id"), nullable=False)
     marks = Column(Integer, nullable=False)
     date = Column(datetime, nullable=False, default=datetime.now().strftime('%d-%m-%Y'))
+    
+    class Parent(Base):
+        __tablename__ = 'parents'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    children = relationship('Child', back_populates='parent')
+
+class Child(Base):
+    __tablename__ = 'children'
+    id = Column(Integer, primary_key=True)
+    parent_id = Column(Integer, ForeignKey('parents.id'))
+    parent = relationship('Parent', back_populates='children')
